@@ -1,0 +1,144 @@
+Challange 2 commands
+#git clone https://gitlab.com/qacdevops/trio-task.git
+# running mysql container using docker
+
+
+#setting up secure password for mysql database container
+export RIMMA_DB_PASSWORD=password
+
+#setting up password for docker container mysql database
+sudo docker run --env MYSQL_ROOT_PASSWORD=${RIMMA_DB_PASSWORD} -d -p 3306:3306 --name mysql mysql
+
+#opening terminal inside mysql container a
+sudo docker exec -it mysql bash
+ls
+
+#checking password
+mysql -uroot -p
+#entering password
+
+#showing databases
+SHOW DATABASES;
+exit
+exit
+
+#creating database, .sql file
+touch CreateTable.sql
+
+#copy content from gitlab CreateTable.sql
+vim CreateTable.sql 
+
+#creating Dockerfile
+touch Dockerfile
+
+#editing Dockerfile and writing commands from GitLab
+vim Dockerfile 
+
+
+## inside Dockerfile//////////////////////////////////////////////////
+FROM mysql:5.7
+
+ENV MYSQL_DATABASE=flask-db
+
+COPY CreateTable.sql docker-entrypoint-initdb.d/
+##
+
+#creating database########################################
+#sudo docker build -t mysql .
+
+#building databasewith a name is flask-db
+sudo docker build -t flask-db .
+
+
+
+sudo docker images
+
+#run docker image om mysql port 
+#WRONG sudo docker run -d -p 3306:3306 --name mysql --env MYSQL_ROOT_PASSWORD=password mysql
+sudo docker run -d -p 3306:3306 --name mysql --env MYSQL_ROOT_PASSWORD=password flask-db
+
+sudo docker ps -a
+
+#container name is mysql
+sudo docker exec -it mysql bash
+
+ mysql -uroot -p
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| flask-db           |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+
+ USE flask-db
+ SHOW TABLES;
+
+Database changed
+mysql> SHOW TABLES;
++--------------------+
+| Tables_in_flask-db |
++--------------------+
+| users              |
++--------------------+
+1 row in set (0.00 sec)
+
+
+
+
+############################################### 
+#Creating another conaiter flask-app
+
+vim Dockerfile
+
+
+#content of Dockerfile
+#Use Python Image
+FROM python:3.7
+
+#Install apt dependencies
+WORKDIR /flask-app
+
+# Copy contents into image
+COPY app.py .
+
+# run pip dependencies
+RUN pip install Flask
+
+# Expose correct port
+EXPOSE 5000
+
+# Create an entrypoint
+ENTRYPOINT ["python", "app.py"]
+############end of the file
+#building container
+
+sudo docker build .
+
+
+#uploading to git
+git config --globa user.email rimma.chepik@nationwide.co.uk
+
+git init
+git add .
+git commit -m "first commit"
+git branch -M master
+git remote add origin https://github.com/rim-ntw/Challange2.git
+git push -u origin master
+
+#######
+#strech task creatiing nginx container with reverse proxy
+
+#changind directory
+cd nginx
+#installing nginx
+sudo apt install -y nginx
+
+#running nginx image
+docker run -d --rm -p 80:80 --name nginx nginx
+
+
+
