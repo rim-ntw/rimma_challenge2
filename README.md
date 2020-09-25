@@ -1,3 +1,11 @@
-# Trio-task
+Challange2
 
-This is a Flask application that is set up and configured to work with a database and nginx. Write a docker-compose.yaml that will bring all these services up and allow the app to run on port `80`.# rimma_challenge2
+What was the challange?
+
+How I exected the challenge to go
+
+What went well?
+
+What didn't go as planned?
+
+Possible improvements for future challanges
